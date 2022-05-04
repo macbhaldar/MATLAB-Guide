@@ -123,7 +123,7 @@ fprintf('\nTraining Set Accuracy: %f\n', mean(double(pred == y)) * 100);
 
 
 
-% LOGISTIC REGRESSION function.
+% LOGISTIC REGRESSION function -----------------------
 % Calculate the optimal thetas for given training set and output values.
 function [theta, J, J_history, exit_flag] = logistic_regression_train(X, y, lambda)
     % X - training set.
@@ -149,4 +149,46 @@ function [theta, J, J_history, exit_flag] = logistic_regression_train(X, y, lamb
     J_history = zeros(1, 1);
     J_history(1) = cost_function(X, y, initial_theta, lambda);
     J_history(2) = cost_function(X, y, theta, lambda);
+end
+
+
+% HYPOTHESIS function ------------------------
+% It predicts the output values y based on the input values X and model parameters.
+function [predictions] = hypothesis(X, theta)
+    % Input:
+    % X - input features - (m x n) matrix.
+    % theta - our model parameters - (n x 1) vector.
+    %
+    % Output:
+    % predictions - output values that a calculated based on model parameters - (m x 1) vector.
+    %
+    % Where:
+    % m - number of training examples,
+    % n - number of features.
+
+    predictions = sigmoid(X * theta);
+end
+
+
+% COST function -------------------------
+% It shows how accurate our model is based on current model parameters.
+function [cost] = cost_function(X, y, theta, lambda)
+    % X - training set.
+    % y - training output values.
+    % theta - model parameters.
+    % lambda - regularization parameter.
+
+    % Initialize number of training examples.
+    m = length(y);
+
+    % Calculate hypothesis.
+    predictions = hypothesis(X, theta);
+
+    % Calculate regularization parameter.
+    % Remmber that we should not regularize the parameter theta_zero.
+    theta_cut = theta(2:end, 1);
+    regularization_param = (lambda / (2 * m)) * (theta_cut' * theta_cut);
+
+    % Calculate cost function.
+    cost = (-1 / m) * (y' * log(predictions) + (1 - y)' * log(1 - predictions)) + regularization_param;
 end
